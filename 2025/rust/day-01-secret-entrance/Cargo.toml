@@ -1,0 +1,13 @@
+[package]
+name = "day-01-secret-entrance"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = { workspace = true }
+
+[dev-dependencies]
+rstest = "0.26.1"
+
+[lints]
+workspace = true

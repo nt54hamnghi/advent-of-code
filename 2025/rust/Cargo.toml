@@ -1,6 +1,9 @@
 [workspace]
-members = []
+members = ["day-01-secret-entrance"]
 resolver = "3"
+
+[workspace.dependencies]
+anyhow = "1.0.100"
 
 [workspace.lints.clippy.all]
 level = "deny"

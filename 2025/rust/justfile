@@ -4,7 +4,7 @@ default:
 
 # create a new package for a new day
 create day name:
-    cargo generate --path ./template --name day-{{day}}-{{name}}
+    cargo generate --path ../../rust-template --name day-{{day}}-{{name}}
 
 alias c := create
 
