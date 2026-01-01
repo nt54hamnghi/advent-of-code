@@ -1,0 +1,46 @@
+[private]
+default:
+    @just --list --justfile {{justfile()}} --unsorted
+
+# create a new package for a new day
+create day name:
+    cargo generate --path ./template --name day-{{day}}-{{name}}
+
+alias c := create
+
+# lint code with clippy and rustfmt
+lint:
+    cargo clippy --all-targets -- -D clippy::all -W clippy::pedantic
+    cargo +nightly fmt --check
+
+alias l := lint
+
+# format code with rustfmt
+fmt:
+    cargo +nightly fmt
+
+alias f := fmt
+
+# find a package using day number or name
+find keyword:
+    @fd --type=directory {{keyword}} | sd '/$' ''
+
+alias fd := find
+
+# run tests of a day given a day number or name
+test keyword:
+    cargo test --package=$(just find {{keyword}})
+
+alias t := test
+
+# run binary of a day given a day number or name
+run keyword:
+    cargo run --package=$(just find {{keyword}})
+
+alias r := run
+
+# watch for changes and run bacon for a package
+watch keyword:
+    bacon -- {{keyword}}
+
+alias w := watch
