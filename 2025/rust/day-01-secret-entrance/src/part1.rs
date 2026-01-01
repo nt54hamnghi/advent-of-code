@@ -1,8 +1,8 @@
 use std::ops::Range;
 use std::str::FromStr;
 
-const MIN: isize = 0;
-const MAX: isize = 99;
+const MIN: usize = 0;
+const MAX: usize = 99;
 
 pub fn run() -> anyhow::Result<()> {
     let input = include_str!("../input/part-1.txt");
@@ -15,12 +15,12 @@ pub fn run() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn get_password(start: isize, steps: Vec<&str>) -> anyhow::Result<isize> {
+fn get_password(start: usize, steps: Vec<&str>) -> anyhow::Result<usize> {
     let mut count = 0;
     let mut at = start;
 
     for s in steps {
-        at = move_to(at, s)?;
+        at = move_to(at, Rotation::from_str(s)?)?;
         if at == 0 {
             count += 1
         }
@@ -29,26 +29,50 @@ fn get_password(start: isize, steps: Vec<&str>) -> anyhow::Result<isize> {
     Ok(count)
 }
 
-fn move_to(at: isize, rotation: &str) -> anyhow::Result<isize> {
-    let (direction, step) = parse_rotation(rotation)?;
+fn move_to(at: usize, rotation: Rotation) -> anyhow::Result<usize> {
     let bound = MAX + 1;
-    let to = match direction {
-        "R" => (step + at) % bound,
-        "L" => (bound - step + at) % bound,
-        _ => unreachable!(),
+    let Rotation { direction, step } = rotation;
+
+    let v = match direction {
+        Direction::Right => (at + step) % bound,
+        Direction::Left => (at + bound - (step % bound)) % bound,
     };
 
-    Ok(to)
+    Ok(v)
 }
 
-fn parse_rotation(v: &str) -> anyhow::Result<(&str, isize)> {
-    let (dir, step) = v.split_at(1);
-    match dir {
-        "R" | "L" => {
-            let step = isize::from_str(step)?;
-            Ok((dir, step))
+struct Rotation {
+    direction: Direction,
+    step: usize,
+}
+
+impl FromStr for Rotation {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let r = s.split_at(1);
+        let direction = Direction::from_str(r.0)?;
+        let step = usize::from_str(r.1)?;
+
+        Ok(Self { direction, step })
+    }
+}
+
+#[derive(Debug, PartialEq)]
+enum Direction {
+    Right,
+    Left,
+}
+
+impl FromStr for Direction {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "R" => Ok(Self::Right),
+            "L" => Ok(Self::Left),
+            _ => anyhow::bail!("Unknown direction"),
         }
-        _ => anyhow::bail!("Unknown direction, expect 'R' or 'L'"),
     }
 }
 
@@ -59,7 +83,7 @@ mod tests {
 
     #[rstest]
     #[case(50, vec!["L68","L30","R48","L5","R60","L55","L1","L99","R14","L82"], 3)]
-    fn test_get_password(#[case] start: isize, #[case] steps: Vec<&str>, #[case] expected: isize) {
+    fn test_get_password(#[case] start: usize, #[case] steps: Vec<&str>, #[case] expected: usize) {
         let to = get_password(start, steps);
         assert!(to.is_ok());
         assert_eq!(to.unwrap(), expected);
@@ -82,25 +106,26 @@ mod tests {
     #[case(99, "L99", 0)]
     #[case(0, "R14", 14)]
     #[case(14, "L82", 32)]
-    fn test_move_to(#[case] at: isize, #[case] rotation: &str, #[case] expected: isize) {
-        let to = move_to(at, rotation);
+    fn test_move_to(#[case] at: usize, #[case] rotation: &str, #[case] expected: usize) {
+        let r = Rotation::from_str(rotation).unwrap();
+        let to = move_to(at, r);
         assert!(to.is_ok());
         assert_eq!(to.unwrap(), expected);
     }
 
     #[rstest]
-    #[case("R42", "R", 42)]
-    #[case("L42", "L", 42)]
+    #[case("R42", Direction::Right, 42)]
+    #[case("L42", Direction::Left, 42)]
     fn test_parse_rotation(
         #[case] input: &str,
-        #[case] expected_dir: &str,
-        #[case] expected_step: isize,
+        #[case] expected_dir: Direction,
+        #[case] expected_step: usize,
     ) {
-        let result = parse_rotation(input);
+        let result = Rotation::from_str(input);
         assert!(result.is_ok());
 
-        let (dir, step) = result.unwrap();
-        assert_eq!(dir, expected_dir);
-        assert_eq!(step, expected_step);
+        let r = result.unwrap();
+        assert_eq!(r.direction, expected_dir);
+        assert_eq!(r.step, expected_step);
     }
 }
