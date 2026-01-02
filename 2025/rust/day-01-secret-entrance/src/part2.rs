@@ -2,10 +2,10 @@ use std::str::FromStr;
 
 use day_01_secret_entrance::{Direction, MAX, Rotation};
 
-pub fn run() -> anyhow::Result<()> {
-    let input = include_str!("../input/part-2.txt");
-    let steps = input.lines().collect::<Vec<_>>();
+const INPUT: &str = include_str!("../input/part-2.txt");
 
+pub fn run() -> anyhow::Result<()> {
+    let steps = INPUT.lines().collect::<Vec<_>>();
     let pw = get_password(50, steps)?;
 
     println!("{}", pw);
