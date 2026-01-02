@@ -40,8 +40,9 @@ impl FromStr for Direction {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use rstest::rstest;
+
+    use super::*;
 
     #[rstest]
     #[case("R42", Direction::Right, 42)]

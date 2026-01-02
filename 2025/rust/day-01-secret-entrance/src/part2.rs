@@ -8,7 +8,7 @@ pub fn run() -> anyhow::Result<()> {
     let steps = INPUT.lines().collect::<Vec<_>>();
     let pw = get_password(50, steps)?;
 
-    println!("{}", pw);
+    println!("{pw}");
 
     Ok(())
 }
@@ -22,7 +22,7 @@ fn get_password(start: usize, steps: Vec<&str>) -> anyhow::Result<usize> {
         count += rounds;
         at = des;
         if at == 0 {
-            count += 1
+            count += 1;
         }
     }
 
@@ -59,8 +59,9 @@ fn move_to(at: usize, rotation: Rotation) -> (usize, usize) {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use rstest::rstest;
+
+    use super::*;
 
     #[rstest]
     #[case(50, "L68", 82, 1)]
@@ -84,6 +85,6 @@ mod tests {
         let rotation = Rotation::from_str(rotation).unwrap();
         let result = move_to(at, rotation);
 
-        assert_eq!(result.1, expected)
+        assert_eq!(result.1, expected);
     }
 }
