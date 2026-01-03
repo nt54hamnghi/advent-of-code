@@ -3,28 +3,15 @@
 use std::ops::RangeInclusive;
 
 use anyhow::Context;
+use day_02_gift_shop::{find_invalid_ids, sum_invalid_ids};
 
 const INPUT: &str = include_str!("../input/part-1.txt");
 
 pub fn run() -> anyhow::Result<()> {
-    let result = sum_invalid_ids(INPUT)?;
+    let result = sum_invalid_ids(INPUT, check_invalid_id)?;
     dbg!(result);
 
     Ok(())
-}
-
-pub fn sum_invalid_ids(input: &str) -> anyhow::Result<usize> {
-    let mut total = 0;
-    for s in input.split(',') {
-        let count = find_invalid_ids(s)?.sum::<usize>();
-        total += count;
-    }
-    Ok(total)
-}
-
-pub fn find_invalid_ids(input: &str) -> anyhow::Result<impl Iterator<Item = usize>> {
-    let range = parse_range(input)?;
-    Ok(range.filter(|id| check_invalid_id(*id)))
 }
 
 pub fn check_invalid_id(id: usize) -> bool {
@@ -36,20 +23,11 @@ pub fn check_invalid_id(id: usize) -> bool {
     f == s
 }
 
-pub fn parse_range(r: &str) -> anyhow::Result<RangeInclusive<usize>> {
-    let (start, end) = r.split_once('-').context("No delimeter")?;
-
-    let start = start.parse::<usize>()?;
-    let end = end.parse::<usize>()?;
-
-    Ok(start..=end)
-}
-
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     use rstest::rstest;
+
+    use super::*;
 
     #[rstest]
     #[case(11, true)]
@@ -83,7 +61,9 @@ mod tests {
     #[case("824824821-824824827", vec![])]
     #[case("2121212118-2121212124", vec![])]
     fn test_check_id_ranges(#[case] input: &str, #[case] expected: Vec<usize>) {
-        let result = find_invalid_ids(input).unwrap().collect::<Vec<_>>();
+        let result = find_invalid_ids(input, check_invalid_id)
+            .unwrap()
+            .collect::<Vec<_>>();
         assert_eq!(result, expected);
     }
 }

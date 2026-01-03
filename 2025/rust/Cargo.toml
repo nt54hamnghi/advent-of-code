@@ -15,7 +15,7 @@ level = "allow"
 priority = -1
 
 [workspace.lints.clippy.pedantic]
-level = "warn"
+level = "allow"
 priority = -1
 
 [workspace.lints.clippy.restriction]
