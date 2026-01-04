@@ -1,15 +1,11 @@
 use std::str::FromStr;
 
 use anyhow::Context;
+use day_03_lobby::parse_power_bank_str;
 
 const INPUT: &str = include_str!("../input/part-1.txt");
 
 pub fn run() -> anyhow::Result<()> {
-    // let input = "818181911112111";
-    // let bank = parse_power_bank_str(input)?;
-    // let v = power_on(&bank);
-    // dbg!(v);
-
     let v: u32 = INPUT
         .lines()
         .map(parse_power_bank_str)
@@ -41,10 +37,10 @@ fn power_on(bank: &[u32]) -> u32 {
         &bank[fi + 1..]
     };
 
-    let (mut s, mut si) = (0, 0);
-    for (i, n) in rest.iter().enumerate() {
+    let mut s = 0;
+    for n in rest.iter() {
         if *n > s {
-            (s, si) = (*n, i);
+            s = *n
         }
     }
 
@@ -56,13 +52,6 @@ fn power_on(bank: &[u32]) -> u32 {
     } else {
         f * 10 + s
     }
-}
-
-fn parse_power_bank_str(input: &str) -> anyhow::Result<Vec<u32>> {
-    input
-        .chars()
-        .map(|c| c.to_digit(10).context("Not a valid decimal digit"))
-        .collect::<Result<Vec<_>, _>>()
 }
 
 #[cfg(test)]

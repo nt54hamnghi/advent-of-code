@@ -1,13 +1,10 @@
 [workspace]
-members = [
-    "day-01-secret-entrance",
-    "day-02-gift-shop",
-    "day-03-lobby",
-]
+members = ["day-01-secret-entrance", "day-02-gift-shop", "day-03-lobby"]
 resolver = "3"
 
 [workspace.dependencies]
 anyhow = "1.0.100"
+itertools = "0.14.0"
 rstest = "0.26.1"
 
 [workspace.lints.clippy.all]
