@@ -1,9 +1,9 @@
 [workspace]
-members = ["day-*"]
+members = ["day-01-calorie-counting"]
 resolver = "3"
 
 [workspace.dependencies]
-anyhow = "1.0.100"
+color-eyre = "0.6.5"
 itertools = "0.14.0"
 rstest = "0.26.1"
 
