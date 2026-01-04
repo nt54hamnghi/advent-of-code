@@ -1,0 +1,29 @@
+# This is a configuration file for the bacon tool
+#
+# Complete help on configuration: https://dystroy.org/bacon/config/
+#
+# You may check the current default at
+#   https://github.com/Canop/bacon/blob/main/defaults/default-bacon.toml
+
+default_job = "run"
+env.CARGO_TERM_COLOR = "always"
+
+[jobs.run]
+command = [
+    "just", "run",
+    # put launch parameters for your program behind a `--` separator
+]
+need_stdout = true
+allow_warnings = true
+background = true
+
+[jobs.test]
+command = [
+    "just", "test",
+    # put launch parameters for your program behind a `--` separator
+]
+need_stdout = true
+
+[keybindings]
+r = "job:run" 
+t = "job:test" 
