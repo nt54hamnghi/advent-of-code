@@ -5,6 +5,7 @@ members = [
     "day-03-lobby",
     "day-04-printing-department",
     "day-05-cafeteria",
+    "day-06-trash-compactor",
 ]
 resolver = "3"
 
